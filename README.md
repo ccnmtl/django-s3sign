@@ -31,6 +31,23 @@ class MySignS3View(LoggedInView, SignS3View):
         return settings.DIFFERENT_BUCKET_NAME
 ```
 
+keeping the uploaded filename instead of doing a random one and
+whitelisted extension:
+
+```
+class MySignS3View(LoggedInView, SignS3View):
+    def _original_filename(self, request):
+        return request.GET[self.get_name_field()]
+
+    def basename(self, request):
+        filename = self._original_filename(request)
+        return os.path.basename(filename)
+
+    def extension(self, request):
+        filename = self._original_filename(request)
+        return os.path.splitext(filename)[1]
+```
+
 Attributes you can override:
 
 ```
@@ -63,4 +80,13 @@ now_time(self) # useful for unit tests
 basename(self)
 get_object_name(self, extension)
 ```
+
+Most of those should be clear. Read the source if in doubt.
+
+The required javascript is also included, so you can do a
+`collectstatic` and include it in your page with:
+
+    <script src="{{STATIC_URL}}s3sign/js/s3upload.js"></script>
+
+TODO: more documentation on making the upload form.
 
