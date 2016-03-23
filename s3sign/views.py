@@ -33,7 +33,7 @@ class SignS3View(View):
     def get_bucket(self):
         return settings.AWS_UPLOAD_BUCKET
 
-    def extension(self, request):
+    def get_mimetype(self, request):
         return request.GET.get(self.type_field)
 
     def extension_from_mimetype(self, mime_type):
