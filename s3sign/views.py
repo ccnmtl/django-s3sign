@@ -23,6 +23,11 @@ class SignS3View(View):
         ('gif', '.gif'),
     ]
     default_extension = '.obj'
+    root = ''
+    path_string = (
+        "{root}{now.year:04d}/{now.month:02d}/"
+        "{now.day:02d}/{basename}{extension}")
+    amz_headers = "x-amz-acl:public-read"
 
     def get_aws_access_key(self):
         return settings.AWS_ACCESS_KEY
@@ -48,27 +53,29 @@ class SignS3View(View):
     def now_time(self):
         return time.time()
 
-    def new_uuid(self):
+    def basename(self):
         return str(uuid.uuid4())
+
+    def get_object_name(self, extension):
+        now = self.now()
+        basename = self.basename()
+        return self.path_string.format(
+            now=now, basename=basename, extension=extension,
+            root=self.root)
 
     def get(self, request):
         AWS_ACCESS_KEY = self.get_aws_access_key()
         AWS_SECRET_KEY = self.get_aws_secret_key()
         S3_BUCKET = self.get_bucket()
-
         mime_type = self.get_mimetype(request)
         extension = self.extension_from_mimetype(mime_type)
 
-        now = self.now()
-        uid = self.new_uuid()
-        object_name = "uploads/%04d/%02d/%02d/%s%s" % (
-            now.year, now.month, now.day, uid, extension)
+        object_name = self.get_object_name(extension)
 
         expires = int(self.now_time() + self.expiration_time)
-        amz_headers = "x-amz-acl:public-read"
 
         put_request = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (
-            mime_type, expires, amz_headers, S3_BUCKET, object_name)
+            mime_type, expires, self.amz_headers, S3_BUCKET, object_name)
 
         signature = base64.encodestring(
             hmac.new(AWS_SECRET_KEY, put_request, sha1).digest())

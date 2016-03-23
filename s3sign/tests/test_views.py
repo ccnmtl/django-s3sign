@@ -8,7 +8,6 @@ from s3sign.views import SignS3View
 class PinnedView(SignS3View):
     """ override the fidgety bits to make the main stuff
     easier to test """
-
     def get_aws_access_key(self):
         return "foo"
 
@@ -24,7 +23,7 @@ class PinnedView(SignS3View):
     def now_time(self):
         return 0
 
-    def new_uuid(self):
+    def basename(self):
         return "f495f780-5fd3-45d3-9483-becc7ebff922"
 
 
@@ -40,9 +39,9 @@ class TestView(TestCase):
         v = SignS3View()
         self.assertIsNotNone(v.now_time())
 
-    def test_new_uuid(self):
+    def test_basename(self):
         v = SignS3View()
-        self.assertIsNotNone(v.new_uuid())
+        self.assertIsNotNone(v.basename())
 
     def test_extension_from_mimetype(self):
         v = SignS3View()
@@ -82,11 +81,10 @@ class TestView(TestCase):
         self.assertTrue('url' in parsed.keys())
         self.assertEqual(
             parsed['signed_request'],
-            (u"https://bucket.s3.amazonaws.com/uploads/2016/01/01/"
-             "f495f780-5fd3-45d3-9483-becc7ebff922.obj?AWSAccessKeyId="
-             "foo&Expires=10&Signature=pcZ3%252Bw1lPDO4N555l6mG%252B2sV"
-             "7JE%253D"))
+            (u"https://bucket.s3.amazonaws.com/2016/01/01/f495f780-5fd3"
+             "-45d3-9483-becc7ebff922.obj?AWSAccessKeyId=foo&Expires="
+             "10&Signature=btZsz9tLDbmhbI5yaFynPYeTzPQ%253D"))
         self.assertEqual(
             parsed['url'],
-            (u"https://bucket.s3.amazonaws.com/uploads/2016/01/01/f495f780"
+            (u"https://bucket.s3.amazonaws.com/2016/01/01/f495f780"
              "-5fd3-45d3-9483-becc7ebff922.obj"))
