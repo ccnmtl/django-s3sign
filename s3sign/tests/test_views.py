@@ -23,7 +23,7 @@ class PinnedView(SignS3View):
     def now_time(self):
         return 0
 
-    def basename(self):
+    def basename(self, request):
         return "f495f780-5fd3-45d3-9483-becc7ebff922"
 
 
@@ -41,7 +41,7 @@ class TestView(TestCase):
 
     def test_basename(self):
         v = SignS3View()
-        self.assertIsNotNone(v.basename())
+        self.assertIsNotNone(v.basename(None))
 
     def test_extension_from_mimetype(self):
         v = SignS3View()
