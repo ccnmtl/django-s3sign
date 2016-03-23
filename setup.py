@@ -5,7 +5,7 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name="django-s3sign",
-    version="0.1.1",
+    version="0.1.3",
     author="Anders Pearson",
     author_email="anders@columbia.edu",
     url="https://github.com/ccnmtl/django-s3sign",
