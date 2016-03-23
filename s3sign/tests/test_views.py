@@ -1,5 +1,31 @@
+import json
+from datetime import datetime
+
 from django.test import TestCase, RequestFactory, override_settings
 from s3sign.views import SignS3View
+
+
+class PinnedView(SignS3View):
+    """ override the fidgety bits to make the main stuff
+    easier to test """
+
+    def get_aws_access_key(self):
+        return "foo"
+
+    def get_aws_secret_key(self):
+        return "bar"
+
+    def get_bucket(self):
+        return "bucket"
+
+    def now(self):
+        return datetime(year=2016, month=1, day=1)
+
+    def now_time(self):
+        return 0
+
+    def new_uuid(self):
+        return "f495f780-5fd3-45d3-9483-becc7ebff922"
 
 
 class TestView(TestCase):
@@ -43,3 +69,24 @@ class TestView(TestCase):
     def test_get_aws_bucket(self):
         v = SignS3View()
         self.assertEqual(v.get_bucket(), 'foo')
+
+    def test_get(self):
+        v = PinnedView()
+        request = self.factory.get(
+            "/",
+            dict(s3_object_type='image/jpg', s3_object_name='foo.jpg'))
+        response = v.get(request)
+        self.assertEqual(response.status_code, 200)
+        parsed = json.loads(response.content)
+        self.assertTrue('signed_request' in parsed.keys())
+        self.assertTrue('url' in parsed.keys())
+        self.assertEqual(
+            parsed['signed_request'],
+            (u"https://bucket.s3.amazonaws.com/uploads/2016/01/01/"
+             "f495f780-5fd3-45d3-9483-becc7ebff922.obj?AWSAccessKeyId="
+             "foo&Expires=10&Signature=pcZ3%252Bw1lPDO4N555l6mG%252B2sV"
+             "7JE%253D"))
+        self.assertEqual(
+            parsed['url'],
+            (u"https://bucket.s3.amazonaws.com/uploads/2016/01/01/f495f780"
+             "-5fd3-45d3-9483-becc7ebff922.obj"))
