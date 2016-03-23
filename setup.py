@@ -5,7 +5,7 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name="django-s3sign",
-    version="0.1.0",
+    version="0.1.1",
     author="Anders Pearson",
     author_email="anders@columbia.edu",
     url="https://github.com/ccnmtl/django-s3sign",
@@ -19,4 +19,5 @@ setup(
     package_data = {'': ['*.*']},
     packages=['s3sign'],
     test_suite='nose.collector',
+    include_package_data=True,
 )
