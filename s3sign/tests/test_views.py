@@ -54,6 +54,10 @@ class TestView(TestCase):
         v = SignS3View()
         self.assertEqual(v.get_mimetype(request), 'hello')
 
+    def test_get_name_field(self):
+        v = SignS3View()
+        self.assertIsNotNone(v.get_name_field())
+
     @override_settings(AWS_ACCESS_KEY='foo')
     def test_get_aws_access_key(self):
         v = SignS3View()
