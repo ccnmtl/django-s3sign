@@ -11,44 +11,9 @@ s3 sign view for django
 ## usage
 
 Add `s3sign` to `INSTALLED_APPS`. Subclass `s3sign.views.SignS3View`
-and override as needed. Eg with a different root path:
+and override as needed.
 
-
-```
-from s3sign.views import SignS3View
-
-...
-
-class MySignS3View(LoggedInView, SignS3View):
-    root = 'uploads/'
-```
-
-With a different S3 bucket:
-
-```
-class MySignS3View(LoggedInView, SignS3View):
-    def get_bucket(self):
-        return settings.DIFFERENT_BUCKET_NAME
-```
-
-keeping the uploaded filename instead of doing a random one and
-whitelisted extension:
-
-```
-class MySignS3View(LoggedInView, SignS3View):
-    def _original_filename(self, request):
-        return request.GET[self.get_name_field()]
-
-    def basename(self, request):
-        filename = self._original_filename(request)
-        return os.path.basename(filename)
-
-    def extension(self, request):
-        filename = self._original_filename(request)
-        return os.path.splitext(filename)[1]
-```
-
-Attributes you can override:
+Attributes you can override (and their default values):
 
 ```
     name_field = 's3_object_name'
@@ -69,19 +34,52 @@ Attributes you can override:
 
 Methods you can override:
 
-```
-get_aws_access_key(self)
-get_aws_secret_key(self)
-get_bucket(self)
-get_mimetype(self, request)
-extension_from_mimetype(self, mime_type)
-now(self) # useful for unit tests
-now_time(self) # useful for unit tests
-basename(self)
-get_object_name(self, extension)
-```
+* `get_aws_access_key(self)`
+* `get_aws_secret_key(self)`
+* `get_bucket(self)`
+* `get_mimetype(self, request)`
+* `extension_from_mimetype(self, mime_type)`
+* `now(self)` # useful for unit tests
+* `now_time(self)` # useful for unit tests
+* `basename(self)`
+* `get_object_name(self, extension)`
 
 Most of those should be clear. Read the source if in doubt.
+
+
+Eg to use a different root path:
+
+
+```
+from s3sign.views import SignS3View
+...
+
+class MySignS3View(LoggedInView, SignS3View):
+    root = 'uploads/'
+```
+
+With a different S3 bucket:
+
+```
+class MySignS3View(LoggedInView, SignS3View):
+    def get_bucket(self):
+        return settings.DIFFERENT_BUCKET_NAME
+```
+
+Keeping the uploaded filename instead of doing a random one and
+whitelisted extension:
+
+```
+class MySignS3View(LoggedInView, SignS3View):
+    def basename(self, request):
+        filename = request.GET[self.get_name_field()]
+        return os.path.basename(filename)
+
+    def extension(self, request):
+        filename = request.GET[self.get_name_field()]
+        return os.path.splitext(filename)[1]
+```
+
 
 The required javascript is also included, so you can do a
 `collectstatic` and include it in your page with:
