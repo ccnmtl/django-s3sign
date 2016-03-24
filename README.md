@@ -81,10 +81,39 @@ class MySignS3View(LoggedInView, SignS3View):
 ```
 
 
+### javascript/forms
+
 The required javascript is also included, so you can do a
 `collectstatic` and include it in your page with:
 
     <script src="{{STATIC_URL}}s3sign/js/s3upload.js"></script>
 
-TODO: more documentation on making the upload form.
+Your form would then somewhere have a bit like:
 
+    <p id="status"><b>Please select a file</b></p>
+    <input type="file" id="file" onchange="s3_upload();"/>
+    <input type="hidden" name="s3_url" id="uploaded-url" />
+
+And
+
+```
+<script>
+function s3_upload() {
+    var s3upload = new S3Upload({
+        file_dom_selector: 'file',
+        s3_sign_put_url: '/sign_s3/',
+        s3_object_name: $('#file')[0].value,
+
+        onProgress: function(percent, message) {
+            $('#status').html('Upload progress: ' + percent + '%' + message);
+        },
+        onFinishS3Put: function(url) {
+            $('#uploaded-url').val(url);
+        },
+        onError: function(status) {
+            $('#status').html('Upload error: ' + status);
+        }
+    });
+}
+</script>
+```
