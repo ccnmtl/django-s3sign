@@ -83,8 +83,8 @@ class MySignS3View(LoggedInView, SignS3View):
 
 ### javascript/forms
 
-The required javascript is also included, so you can do a
-`collectstatic` and include it in your page with:
+The required javascript is also included, so you can include it in
+your page with:
 
     <script src="{{STATIC_URL}}s3sign/js/s3upload.js"></script>
 
@@ -101,7 +101,7 @@ And
 function s3_upload() {
     var s3upload = new S3Upload({
         file_dom_selector: 'file',
-        s3_sign_put_url: '/sign_s3/',
+        s3_sign_put_url: '/sign_s3/', // change this if you route differently
         s3_object_name: $('#file')[0].value,
 
         onProgress: function(percent, message) {
