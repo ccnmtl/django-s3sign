@@ -1,9 +1,16 @@
+from __future__ import unicode_literals
+
 import base64
 import hmac
 import json
 import time
-import urllib
 import uuid
+
+try:
+    from urllib.parse import quote, quote_plus
+except ImportError:
+    # python 2
+    from urllib import quote, quote_plus
 
 from datetime import datetime
 from hashlib import sha1
@@ -11,6 +18,7 @@ from hashlib import sha1
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import View
+from django.utils.encoding import smart_bytes
 
 
 class SignS3View(View):
@@ -104,12 +112,15 @@ class SignS3View(View):
             mime_type, expires, self.get_amz_headers(), S3_BUCKET, object_name)
 
         signature = base64.encodestring(
-            hmac.new(AWS_SECRET_KEY, put_request, sha1).digest())
-        signature = urllib.quote_plus(signature.strip())
+            hmac.new(
+                smart_bytes(AWS_SECRET_KEY),
+                put_request.encode('utf-8'),
+                sha1).digest())
+        signature = quote_plus(signature.strip())
 
         # Encode the plus symbols
         # https://pmt.ccnmtl.columbia.edu/item/95796/
-        signature = urllib.quote(signature)
+        signature = quote(signature)
 
         url = 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, object_name)
         signed_request = '%s?AWSAccessKeyId=%s&Expires=%d&Signature=%s' % (

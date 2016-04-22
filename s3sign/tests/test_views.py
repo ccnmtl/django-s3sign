@@ -1,7 +1,10 @@
+from __future__ import unicode_literals
+
 import json
 from datetime import datetime
 
 from django.test import TestCase, RequestFactory, override_settings
+from django.utils.encoding import smart_text
 from s3sign.views import SignS3View
 
 
@@ -80,15 +83,15 @@ class TestView(TestCase):
             dict(s3_object_type='image/jpg', s3_object_name='foo.jpg'))
         response = v.get(request)
         self.assertEqual(response.status_code, 200)
-        parsed = json.loads(response.content)
+        parsed = json.loads(smart_text(response.content))
         self.assertTrue('signed_request' in parsed.keys())
         self.assertTrue('url' in parsed.keys())
         self.assertEqual(
             parsed['signed_request'],
-            (u"https://bucket.s3.amazonaws.com/2016/01/01/f495f780-5fd3"
+            ("https://bucket.s3.amazonaws.com/2016/01/01/f495f780-5fd3"
              "-45d3-9483-becc7ebff922.obj?AWSAccessKeyId=foo&Expires="
              "10&Signature=btZsz9tLDbmhbI5yaFynPYeTzPQ%253D"))
         self.assertEqual(
             parsed['url'],
-            (u"https://bucket.s3.amazonaws.com/2016/01/01/f495f780"
+            ("https://bucket.s3.amazonaws.com/2016/01/01/f495f780"
              "-5fd3-45d3-9483-becc7ebff922.obj"))
