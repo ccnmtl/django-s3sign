@@ -29,7 +29,6 @@ def main():
         ),
 
         COVERAGE_EXCLUDES_FOLDERS=['migrations'],
-        ROOT_URLCONF='s3sign.tests.urls',
 
         PROJECT_APPS=[
             's3sign',
