@@ -1,20 +1,29 @@
 language: python
-sudo: False
+sudo: false
 python:
-  - "2.7"
-  - "3.5"
+- '2.7'
+- '3.5'
 env:
-  - DJANGO="Django>=1.8.0,<1.9.0"
-  - DJANGO="Django>=1.10,<1.11.0"
-  - DJANGO="Django>=1.11,<1.12.0"
+- DJANGO="Django>=1.8.0,<1.9.0"
+- DJANGO="Django>=1.10,<1.11.0"
+- DJANGO="Django>=1.11,<1.12.0"
 install:
-  - pip install $DJANGO
-  - pip install .
-  - pip install flake8
-  - pip install coveralls
+- pip install $DJANGO
+- pip install .
+- pip install flake8
+- pip install coveralls
 script:
-  - flake8 s3sign
-  - python runtests.py
-  - coverage run --source=s3sign runtests.py
+- flake8 s3sign
+- python runtests.py
+- coverage run --source=s3sign runtests.py
 after_success:
-  - coveralls
+- coveralls
+deploy:
+  provider: pypi
+  distributions: sdist bdist_wheel
+  user: ctlpypi
+  password:
+    secure: LewRcZvb8Zih2MfI3fSGjAUZRjG3Pnh7CnFg9RU9rKEqa40CouDXgRyzPZFo1llzD1NAKTFxPrjc3AX0wPMPuoahFJZLZzk/CYOtIwKGqigH5MAySCzE0le8rG/TccDNNHrEU26naX6g4fVjMXO+T7o9Cf0ihwfduEm4ZwsOWfaDcr7o/aPke9X+LpuJPGYP2eliEP/Q5WnZOReBl5yQB+p8uhsLXkk/0SpXirrJhwKExnky1Eb6eE7vTlyk6vSEMQrqI8Vbg0M7XczmTf9Ityn/AtTRz8LSYEcT8VXEJjy0sLBantyG2GFkgEOp7KqaL0ofU7WWOSwbVUz3d3HUMr9E8JjZXtNti1OKwXh/RUGc2Yko3ZeXITKPKmK6zIFWkOL1jn1RMvVD/NNYwoFahGhITLz5ix5DgS1T3WLzY9eAm57e8r3L7ckHLrMAwa5ThxeCHVVvVDfSjtcSLzQ9K6Hxp38W9Q/G7fU+fwwFTr6rEGfHOhFPXyXvROaXoAjPyrGd+iX3scshmjD4LQ9EAsfYeY6pp6/VZwBqN7uZ79x198jkdIADFklM0RgAj6nLW1qEnpYGg34u/7E2I47l/fYv5M48nRCkRZQCpl20t5iixntpVb8mJO6Lj8w/EeJmCMGtZgT8Suf5pO1TxY5bOAc1+snwOfHYpfc9HBvORlQ=
+  on:
+    tags: true
+    repo: ccnmtl/django-s3sign
