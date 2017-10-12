@@ -5,11 +5,11 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 
 setup(
     name="django-s3sign",
-    version="0.1.3",
+    version="0.1.4",
     author="Anders Pearson",
-    author_email="anders@columbia.edu",
+    author_email="ccnmtl-dev@columbia.edu",
     url="https://github.com/ccnmtl/django-s3sign",
-    description="Django smoketest framework",
+    description="Django view for AWS S3 signing",
     long_description=open(os.path.join(ROOT, 'README.md')).read(),
     install_requires=['Django>=1.8', 'nose'],
     scripts=[],
