@@ -111,7 +111,7 @@ class SignS3View(View):
         put_request = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (
             mime_type, expires, self.get_amz_headers(), S3_BUCKET, object_name)
 
-        signature = base64.encodestring(
+        signature = base64.encodebytes(
             hmac.new(
                 smart_bytes(AWS_SECRET_KEY),
                 put_request.encode('utf-8'),
