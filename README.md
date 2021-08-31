@@ -90,7 +90,7 @@ your page with:
 
 Your form would then somewhere have a bit like:
 
-    <p id="status"><b>Please select a file</b></p>
+    <p id="status"><strong>Please select a file</strong></p>
     <input type="file" id="file" onchange="s3_upload();"/>
     <input type="hidden" name="s3_url" id="uploaded-url" />
 
