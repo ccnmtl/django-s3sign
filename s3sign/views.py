@@ -29,6 +29,9 @@ class SignS3View(View):
         ('jpeg', '.jpg'),
         ('png', '.png'),
         ('gif', '.gif'),
+        ('pdf', '.pdf'),
+        ('svg', '.svg'),
+        ('webp', '.webp'),
     ]
     default_extension = '.obj'
     root = ''
