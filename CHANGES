@@ -1,3 +1,7 @@
+0.1.6
+==================
+* Add webp, svg, and pdf mime types.
+
 0.1.5 (2021-03-08)
 ==================
 * Update base64.encodestring() to encodebytes().

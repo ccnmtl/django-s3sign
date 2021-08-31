@@ -23,6 +23,9 @@ Attributes you can override (and their default values):
         ('jpeg', '.jpg'),
         ('png', '.png'),
         ('gif', '.gif'),
+        ('pdf', '.pdf'),
+        ('svg', '.svg'),
+        ('webp', '.webp'),
     ]
     default_extension = '.obj'
     root = ''
