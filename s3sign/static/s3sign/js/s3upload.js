@@ -107,7 +107,11 @@
         };
       }
       xhr.setRequestHeader('Content-Type', file.type);
-      xhr.setRequestHeader('x-amz-acl', this.x_amz_acl);
+
+      if (this.x_amz_acl) {
+        xhr.setRequestHeader('x-amz-acl', this.x_amz_acl);
+      }
+
       return xhr.send(file);
     };
 
