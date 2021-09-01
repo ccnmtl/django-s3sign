@@ -111,8 +111,13 @@ class SignS3View(View):
 
         expires = int(self.now_time() + self.get_expiration_time())
 
-        put_request = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (
-            mime_type, expires, self.get_amz_headers(), S3_BUCKET, object_name)
+        if self.get_amz_headers():
+            put_request = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (
+                mime_type, expires, self.get_amz_headers(),
+                S3_BUCKET, object_name)
+        else:
+            put_request = "PUT\n\n%s\n%d\n/%s/%s" % (
+                mime_type, expires, S3_BUCKET, object_name)
 
         signature = base64.encodebytes(
             hmac.new(

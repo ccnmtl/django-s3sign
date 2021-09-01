@@ -1,3 +1,8 @@
+0.1.7
+==================
+* Don't use amz headers for signature calculation if they aren't
+  present.
+
 0.1.6 (2021-09-01)
 ==================
 * Add webp, svg, and pdf mime types.
