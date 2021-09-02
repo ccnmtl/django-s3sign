@@ -1,4 +1,4 @@
-0.1.8
+0.1.8 (2021-09-02)
 ==================
 * Add `SignS3View.private` flag to determine whether we're uploading
   private resources. If so, return the signed GET url so the media can
