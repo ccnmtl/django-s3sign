@@ -108,13 +108,13 @@ function s3_upload() {
         s3_object_name: $('#file')[0].value,
 
         onProgress: function(percent, message) {
-            $('#status').html('Upload progress: ' + percent + '% ' + message);
+            $('#status').text('Upload progress: ' + percent + '% ' + message);
         },
         onFinishS3Put: function(url) {
             $('#uploaded-url').val(url);
         },
         onError: function(status) {
-            $('#status').html('Upload error: ' + status);
+            $('#status').text('Upload error: ' + status);
         }
     });
 }
