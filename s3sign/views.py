@@ -6,6 +6,15 @@ import json
 import time
 import uuid
 
+import logging
+try:
+    import boto3
+    from botocore.exceptions import ClientError
+except ImportError:
+    # Don't error out if boto3 isn't available. This is only required
+    # when the 'private' flag is True.
+    pass
+
 try:
     from urllib.parse import quote, quote_plus
 except ImportError:
@@ -39,6 +48,10 @@ class SignS3View(View):
         "{root}{now.year:04d}/{now.month:02d}/"
         "{now.day:02d}/{basename}{extension}")
     amz_headers = "x-amz-acl:public-read"
+
+    # The private flag specifies whether we need to return a signed
+    # GET url when the upload succeeds.
+    private = False
 
     def get_name_field(self):
         return self.name_field
@@ -102,6 +115,40 @@ class SignS3View(View):
             now=now, basename=basename, extension=extension,
             root=self.get_root())
 
+    def create_presigned_url(self, bucket_name, object_name,
+                             expiration=3600):
+        """Generate a presigned URL to share an S3 object
+
+        From: https://boto3.amazonaws.com/v1/documentation/api/latest/
+                                 guide/s3-presigned-urls.html
+
+        :param bucket_name: string
+        :param object_name: string
+        :param expiration: Time in seconds for the presigned URL to
+          remain valid
+        :return: Presigned URL as string. If error, returns None.
+        """
+
+        # Generate a presigned URL for the S3 object
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=self.get_aws_access_key(),
+            aws_secret_access_key=self.get_aws_secret_key()
+        )
+
+        try:
+            response = s3_client.generate_presigned_url(
+                'get_object',
+                Params={'Bucket': bucket_name,
+                        'Key': object_name},
+                ExpiresIn=expiration)
+        except ClientError as e:
+            logging.error(e)
+            return None
+
+        # The response contains the presigned URL
+        return response
+
     def get(self, request):
         AWS_ACCESS_KEY = self.get_aws_access_key()
         AWS_SECRET_KEY = self.get_aws_secret_key()
@@ -119,23 +166,33 @@ class SignS3View(View):
             put_request = "PUT\n\n%s\n%d\n/%s/%s" % (
                 mime_type, expires, S3_BUCKET, object_name)
 
+        # Calculate the signature for a PUT request.
         signature = base64.encodebytes(
             hmac.new(
                 smart_bytes(AWS_SECRET_KEY),
                 put_request.encode('utf-8'),
-                sha1).digest())
+                sha1
+            ).digest())
         signature = quote_plus(signature.strip())
 
         # Encode the plus symbols
         # https://pmt.ccnmtl.columbia.edu/item/95796/
         signature = quote(signature)
 
-        url = 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, object_name)
-        signed_request = '%s?AWSAccessKeyId=%s&Expires=%d&Signature=%s' % (
-            url, AWS_ACCESS_KEY, expires, signature)
+        url = 'https://{}.s3.amazonaws.com/{}'.format(
+            S3_BUCKET, object_name)
+        signed_request = \
+            '{}?AWSAccessKeyId={}&Expires={:d}&Signature={}'.format(
+                url, AWS_ACCESS_KEY, expires, signature)
+
+        data = {
+            'signed_request': signed_request,
+            'url': url
+        }
+
+        if self.private:
+            data['signed_get_url'] = self.create_presigned_url(
+                S3_BUCKET, object_name, self.get_expiration_time()),
 
         return HttpResponse(
-            json.dumps({
-                'signed_request': signed_request,
-                'url': url
-            }), content_type="application/json")
+            json.dumps(data), content_type='application/json')
