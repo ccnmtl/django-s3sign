@@ -1,3 +1,9 @@
+0.1.8
+==================
+* Add `SignS3View.private` flag to determine whether we're uploading
+  private resources. If so, return the signed GET url so the media can
+  be displayed immediately on upload.
+
 0.1.7 (2021-09-02)
 ==================
 * Don't use amz headers for signature calculation if they aren't
