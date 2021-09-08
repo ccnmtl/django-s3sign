@@ -1,4 +1,4 @@
-0.1.9
+0.1.9 (2021-09-08)
 ==================
 * Fix bug where signatures with '+' in weren't being properly encoded.
 
