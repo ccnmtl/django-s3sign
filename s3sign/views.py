@@ -1,33 +1,25 @@
 from __future__ import unicode_literals
 
-import base64
-import hmac
 import json
 import time
 import uuid
 
 import logging
-try:
-    import boto3
-    from botocore.exceptions import ClientError
-except ImportError:
-    # Don't error out if boto3 isn't available. This is only required
-    # when the 'private' flag is True.
-    pass
-
-try:
-    from urllib.parse import quote, quote_plus
-except ImportError:
-    # python 2
-    from urllib import quote, quote_plus
+import boto3
+from botocore.config import Config
+from botocore.exceptions import ClientError
 
 from datetime import datetime
-from hashlib import sha1
 
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import View
-from django.utils.encoding import smart_bytes
+
+
+s3_config = Config(
+    signature_version='s3v4',
+    s3={'addressing_style': 'path'},
+)
 
 
 class SignS3View(View):
@@ -47,11 +39,19 @@ class SignS3View(View):
     path_string = (
         "{root}{now.year:04d}/{now.month:02d}/"
         "{now.day:02d}/{basename}{extension}")
-    amz_headers = "x-amz-acl:public-read"
+    acl = 'public-read'
 
     # The private flag specifies whether we need to return a signed
     # GET url when the upload succeeds.
     private = False
+
+    def dispatch(self, request, *args, **kwargs):
+        self.s3_client = boto3.client(
+            's3', config=s3_config,
+            aws_access_key_id=self.get_aws_access_key(),
+            aws_secret_access_key=self.get_aws_secret_key()
+        )
+        return super().dispatch(request, *args, **kwargs)
 
     def get_name_field(self):
         return self.name_field
@@ -73,9 +73,6 @@ class SignS3View(View):
 
     def get_path_string(self):
         return self.path_string
-
-    def get_amz_headers(self):
-        return self.amz_headers
 
     def get_aws_access_key(self):
         return settings.AWS_ACCESS_KEY
@@ -130,14 +127,8 @@ class SignS3View(View):
         """
 
         # Generate a presigned URL for the S3 object
-        s3_client = boto3.client(
-            's3',
-            aws_access_key_id=self.get_aws_access_key(),
-            aws_secret_access_key=self.get_aws_secret_key()
-        )
-
         try:
-            response = s3_client.generate_presigned_url(
+            response = self.s3_client.generate_presigned_url(
                 'get_object',
                 Params={'Bucket': bucket_name,
                         'Key': object_name},
@@ -149,51 +140,77 @@ class SignS3View(View):
         # The response contains the presigned URL
         return response
 
+    def create_presigned_url_expanded(
+            self, client_method_name, method_parameters=None,
+            expiration=3600, http_method=None):
+        """Generate a presigned URL to invoke an S3.Client method
+
+        Not all the client methods provided in the AWS Python SDK are
+        supported.
+
+        :param client_method_name: Name of the S3.Client method, e.g.,
+        'list_buckets'
+
+        :param method_parameters: Dictionary of parameters to send to
+        the method
+
+        :param expiration: Time in seconds for the presigned URL to
+        remain valid
+
+        :param http_method: HTTP method to use (GET, etc.)
+        :return: Presigned URL as string. If error, returns None.
+        """
+
+        # Generate a presigned URL for the S3 client method
+
+        try:
+            response = self.s3_client.generate_presigned_url(
+                ClientMethod=client_method_name,
+                Params=method_parameters,
+                ExpiresIn=expiration,
+                HttpMethod=http_method)
+        except ClientError as e:
+            logging.error(e)
+            return None
+
+        # The response contains the presigned URL
+        return response
+
     def get(self, request):
-        AWS_ACCESS_KEY = self.get_aws_access_key()
-        AWS_SECRET_KEY = self.get_aws_secret_key()
         S3_BUCKET = self.get_bucket()
         mime_type = self.get_mimetype(request)
         object_name = self.get_object_name(request)
 
-        expires = int(self.now_time() + self.get_expiration_time())
-
-        if self.get_amz_headers():
-            put_request = "PUT\n\n%s\n%d\n%s\n/%s/%s" % (
-                mime_type, expires, self.get_amz_headers(),
-                S3_BUCKET, object_name)
-        else:
-            put_request = "PUT\n\n%s\n%d\n/%s/%s" % (
-                mime_type, expires, S3_BUCKET, object_name)
-
-        # Calculate the signature for a PUT request.
-        signature = base64.encodebytes(
-            hmac.new(
-                smart_bytes(AWS_SECRET_KEY),
-                put_request.encode('utf-8'),
-                sha1
-            ).digest())
-        signature = quote_plus(signature.strip())
-
-        # Encode the plus symbols
-        # https://pmt.ccnmtl.columbia.edu/item/95796/
-        signature = quote(signature)
+        if not getattr(self, 's3_client', None):
+            self.s3_client = boto3.client(
+                's3', config=s3_config,
+                aws_access_key_id=self.get_aws_access_key(),
+                aws_secret_access_key=self.get_aws_secret_key()
+            )
 
         url = 'https://{}.s3.amazonaws.com/{}'.format(
             S3_BUCKET, object_name)
-        signed_request = \
-            '{}?AWSAccessKeyId={}&Expires={:d}&Signature={}'.format(
-                url, AWS_ACCESS_KEY, expires, signature)
+
+        put_data = {
+            'Bucket': S3_BUCKET,
+            'ContentType': mime_type.replace(' ', '+'),
+            'Key': object_name,
+        }
+
+        if self.acl:
+            put_data['ACL'] = self.acl
+
+        signed_request = self.create_presigned_url_expanded(
+            'put_object', put_data, self.get_expiration_time(), 'PUT')
 
         data = {
             'signed_request': signed_request,
-            'url': url
+            'url': url,
         }
 
         if self.private:
-            data['signed_get_url'] = quote(
-                self.create_presigned_url(
-                    S3_BUCKET, object_name, self.get_expiration_time()))
+            data['signed_get_url'] = self.create_presigned_url(
+                S3_BUCKET, object_name, self.get_expiration_time())
 
         return HttpResponse(
             json.dumps(data), content_type='application/json')
