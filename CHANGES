@@ -1,3 +1,7 @@
+0.1.9
+==================
+* Fix bug where signatures with '+' in weren't being properly encoded.
+
 0.1.8 (2021-09-02)
 ==================
 * Add `SignS3View.private` flag to determine whether we're uploading
