@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 import json
 from datetime import datetime
+from urllib.parse import urlparse
 
 from django.test import TestCase, RequestFactory, override_settings
 from django.utils.encoding import smart_text
@@ -33,6 +34,7 @@ class PinnedView(SignS3View):
 class TestView(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
+        self.maxDiff = None
 
     def test_now(self):
         v = SignS3View()
@@ -83,15 +85,22 @@ class TestView(TestCase):
             dict(s3_object_type='image/jpg', s3_object_name='foo.jpg'))
         response = v.get(request)
         self.assertEqual(response.status_code, 200)
-        parsed = json.loads(smart_text(response.content))
-        self.assertTrue('signed_request' in parsed.keys())
-        self.assertTrue('url' in parsed.keys())
+        resp = json.loads(smart_text(response.content))
+        self.assertTrue('signed_request' in resp.keys())
+        self.assertTrue('url' in resp.keys())
+
+        parsed = urlparse(resp['signed_request'])
         self.assertEqual(
-            parsed['signed_request'],
-            ("https://bucket.s3.amazonaws.com/2016/01/01/f495f780-5fd3"
-             "-45d3-9483-becc7ebff922.obj?AWSAccessKeyId=foo&Expires="
-             "10&Signature=btZsz9tLDbmhbI5yaFynPYeTzPQ%253D"))
+            parsed.path,
+            '/bucket/2016/01/01/f495f780-5fd3-45d3-9483-becc7ebff922.obj')
+        self.assertTrue('X-Amz-Algorithm=AWS4-HMAC-SHA256' in parsed.query)
+        self.assertTrue('X-Amz-Date' in parsed.query)
+        self.assertTrue(
+            'X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-acl' in
+            parsed.query)
+        self.assertTrue('X-Amz-Signature=' in parsed.query)
+
         self.assertEqual(
-            parsed['url'],
+            resp['url'],
             ("https://bucket.s3.amazonaws.com/2016/01/01/f495f780"
              "-5fd3-45d3-9483-becc7ebff922.obj"))

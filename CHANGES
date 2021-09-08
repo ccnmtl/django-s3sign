@@ -1,3 +1,15 @@
+0.2.0
+==================
+* This library now requires boto3 and botocore to be installed.
+* The `amz_headers` view option has been replaced by the `acl`
+  option. This is 'public-read' by default. Set it to None or
+  'private' for non-public assets.
+* Use boto3 for signing the PUT request.
+* Use AWS Signature version 4 for signing URLs. This avoids the needs
+  for quoting which has led to encoding bugs.
+* Add a ContentType fix on PUT request that fixes a bug where SVG's
+  can't be uploaded.
+
 0.1.9 (2021-09-08)
 ==================
 * Fix bug where signatures with '+' in weren't being properly encoded.
