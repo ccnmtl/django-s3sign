@@ -191,8 +191,9 @@ class SignS3View(View):
         }
 
         if self.private:
-            data['signed_get_url'] = self.create_presigned_url(
-                S3_BUCKET, object_name, self.get_expiration_time()),
+            data['signed_get_url'] = quote(
+                self.create_presigned_url(
+                    S3_BUCKET, object_name, self.get_expiration_time()))
 
         return HttpResponse(
             json.dumps(data), content_type='application/json')
