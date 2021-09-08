@@ -1,4 +1,4 @@
-0.2.0
+0.2.0 (2021-09-08)
 ==================
 * This library now requires boto3 and botocore to be installed.
 * The `amz_headers` view option has been replaced by the `acl`
