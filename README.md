@@ -20,10 +20,11 @@ Attributes you can override (and their default values):
     type_field = 's3_object_type'
     expiration_time = 10
     mime_type_extensions = [
-        ('jpeg', '.jpg'),
-        ('png', '.png'),
+        ('bmp', '.bmp'),
         ('gif', '.gif'),
+        ('jpeg', '.jpg'),
         ('pdf', '.pdf'),
+        ('png', '.png'),
         ('svg', '.svg'),
         ('webp', '.webp'),
     ]
