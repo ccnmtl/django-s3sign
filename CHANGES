@@ -1,3 +1,8 @@
+0.2.1
+==================
+* Move s3 signing functions out of the view so they can be imported
+  and used separately.
+
 0.2.0 (2021-09-08)
 ==================
 * This library now requires boto3 and botocore to be installed.
