@@ -1,4 +1,4 @@
-0.2.1
+0.2.1 (2021-09-10)
 ==================
 * Move s3 signing functions out of the view so they can be imported
   and used separately.
