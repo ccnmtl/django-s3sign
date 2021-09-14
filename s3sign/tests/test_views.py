@@ -2,7 +2,6 @@ from __future__ import unicode_literals
 
 import json
 from datetime import datetime
-from urllib.parse import urlparse
 
 from django.test import TestCase, RequestFactory, override_settings
 from django.utils.encoding import smart_text
@@ -86,19 +85,22 @@ class TestView(TestCase):
         response = v.get(request)
         self.assertEqual(response.status_code, 200)
         resp = json.loads(smart_text(response.content))
-        self.assertTrue('signed_request' in resp.keys())
+        self.assertTrue('presigned_post_url' in resp.keys())
         self.assertTrue('url' in resp.keys())
 
-        parsed = urlparse(resp['signed_request'])
+        urlObj = resp['presigned_post_url']
+        fields = urlObj.get('fields')
+
+        self.assertEqual(urlObj.get('url'), 'https://s3.amazonaws.com/bucket')
         self.assertEqual(
-            parsed.path,
-            '/bucket/2016/01/01/f495f780-5fd3-45d3-9483-becc7ebff922.obj')
-        self.assertTrue('X-Amz-Algorithm=AWS4-HMAC-SHA256' in parsed.query)
-        self.assertTrue('X-Amz-Date' in parsed.query)
+            fields.get('key'),
+            '2016/01/01/f495f780-5fd3-45d3-9483-becc7ebff922.obj')
+        self.assertEqual(fields.get('x-amz-algorithm'), 'AWS4-HMAC-SHA256')
+        self.assertTrue('x-amz-date' in fields)
         self.assertTrue(
-            'X-Amz-SignedHeaders=content-type%3Bhost%3Bx-amz-acl' in
-            parsed.query)
-        self.assertTrue('X-Amz-Signature=' in parsed.query)
+            'us-east-1/s3/aws4_request' in fields.get('x-amz-credential'))
+
+        self.assertTrue('x-amz-signature' in fields)
 
         self.assertEqual(
             resp['url'],

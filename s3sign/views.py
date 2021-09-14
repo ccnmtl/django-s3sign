@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from django.views.generic import View
 
 from s3sign.utils import (
-    s3_config, create_presigned_url, create_presigned_url_expanded
+    s3_config, create_presigned_url, create_presigned_post
 )
 
 
@@ -36,6 +36,7 @@ class SignS3View(View):
         "{root}{now.year:04d}/{now.month:02d}/"
         "{now.day:02d}/{basename}{extension}")
     acl = 'public-read'
+    max_file_size = 4000000
 
     # The private flag specifies whether we need to return a signed
     # GET url when the upload succeeds.
@@ -132,18 +133,26 @@ class SignS3View(View):
         if self.acl:
             put_data['ACL'] = self.acl
 
-        signed_request = create_presigned_url_expanded(
-            self.s3_client, 'put_object', put_data,
-            self.get_expiration_time(), 'PUT'
-        )
+        presigned_post_url = create_presigned_post(
+            self.s3_client, S3_BUCKET, object_name,
+            fields={
+                'Content-Type': mime_type.replace(' ', '+'),
+            },
+            conditions=[
+                # Allow for setting the content-type in the form data.
+                ['starts-with', '$Content-Type', ''],
+                # Limit upload to 4MB
+                ['content-length-range', 0, self.max_file_size],
+            ],
+            expiration=self.get_expiration_time())
 
         data = {
-            'signed_request': signed_request,
             'url': url,
+            'presigned_post_url': presigned_post_url,
         }
 
         if self.private:
-            data['signed_get_url'] = create_presigned_url(
+            data['presigned_get_url'] = create_presigned_url(
                 self.s3_client, S3_BUCKET,
                 object_name, self.get_expiration_time()
             )
