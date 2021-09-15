@@ -1,4 +1,4 @@
-0.3.0
+0.3.0 (2021-09-15)
 ==================
 * Use presigned POST request instead of PUT.
 * Add a configurable policy limit (default 4mb) for uploads.
