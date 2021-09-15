@@ -1,3 +1,8 @@
+0.3.0
+==================
+* Use presigned POST request instead of PUT.
+* Add a configurable policy limit (default 4mb) for uploads.
+
 0.2.1 (2021-09-10)
 ==================
 * Move s3 signing functions out of the view so they can be imported
