@@ -1,6 +1,7 @@
 0.3.1
 ==================
 * Use default max file size of 2gb.
+* Update default expiration time to 8 hours.
 
 0.3.0 (2021-09-15)
 ==================

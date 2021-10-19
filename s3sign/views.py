@@ -20,7 +20,7 @@ from s3sign.utils import (
 class SignS3View(View):
     name_field = 's3_object_name'
     type_field = 's3_object_type'
-    expiration_time = 10
+    expiration_time = 3600 * 8  # 8 hours
     mime_type_extensions = [
         ('bmp', '.bmp'),
         ('gif', '.gif'),
