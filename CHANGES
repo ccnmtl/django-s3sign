@@ -1,3 +1,7 @@
+0.3.1
+==================
+* Use default max file size of 2gb.
+
 0.3.0 (2021-09-15)
 ==================
 * Use presigned POST request instead of PUT.
