@@ -36,7 +36,7 @@ class SignS3View(View):
         "{root}{now.year:04d}/{now.month:02d}/"
         "{now.day:02d}/{basename}{extension}")
     acl = 'public-read'
-    max_file_size = 4000000
+    max_file_size = 2000000000  # 2gb
 
     # The private flag specifies whether we need to return a signed
     # GET url when the upload succeeds.
