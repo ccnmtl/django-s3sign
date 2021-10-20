@@ -23,7 +23,7 @@
         };
 
         function S3Upload(options) {
-            if (options == null) options = {};
+            if (options === null) options = {};
             let option;
             for (option in options) {
                 this[option] = options[option];
@@ -54,7 +54,7 @@
             var xhr;
             xhr = new XMLHttpRequest();
 
-            if (xhr.withCredentials != null) {
+            if (xhr.withCredentials !== null) {
                 xhr.open(method, url, true);
             } else if (typeof XDomainRequest !== "undefined") {
                 xhr = new XDomainRequest();
