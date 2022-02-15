@@ -72,13 +72,13 @@ class SignS3View(View):
         return self.path_string
 
     def get_aws_access_key(self):
-        return settings.AWS_ACCESS_KEY
+        return settings.AWS_ACCESS_KEY_ID
 
     def get_aws_secret_key(self):
-        return settings.AWS_SECRET_KEY
+        return settings.AWS_SECRET_ACCESS_KEY
 
     def get_bucket(self):
-        return settings.AWS_UPLOAD_BUCKET
+        return settings.AWS_STORAGE_BUCKET_NAME
 
     def get_mimetype(self, request):
         return request.GET.get(self.get_type_field())

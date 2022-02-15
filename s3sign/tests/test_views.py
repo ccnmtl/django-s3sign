@@ -62,17 +62,17 @@ class TestView(TestCase):
         v = SignS3View()
         self.assertIsNotNone(v.get_name_field())
 
-    @override_settings(AWS_ACCESS_KEY='foo')
+    @override_settings(AWS_ACCESS_KEY_ID='foo')
     def test_get_aws_access_key(self):
         v = SignS3View()
         self.assertEqual(v.get_aws_access_key(), 'foo')
 
-    @override_settings(AWS_SECRET_KEY='foo')
+    @override_settings(AWS_SECRET_ACCESS_KEY='foo')
     def test_get_aws_secret_key(self):
         v = SignS3View()
         self.assertEqual(v.get_aws_secret_key(), 'foo')
 
-    @override_settings(AWS_UPLOAD_BUCKET='foo')
+    @override_settings(AWS_STORAGE_BUCKET_NAME='foo')
     def test_get_aws_bucket(self):
         v = SignS3View()
         self.assertEqual(v.get_bucket(), 'foo')
