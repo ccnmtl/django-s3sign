@@ -2,6 +2,8 @@
 ==================
 * Use default max file size of 2gb.
 * Update default expiration time to 8 hours.
+* Introduce configurable region name, via
+  `AWS_S3_REGION_NAME`. Defaults to us-east-1.
 
 0.3.0 (2021-09-15)
 ==================
