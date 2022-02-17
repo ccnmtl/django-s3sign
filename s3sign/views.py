@@ -17,6 +17,9 @@ from s3sign.utils import (
 )
 
 
+DEFAULT_AWS_REGION = 'us-east-1'
+
+
 class SignS3View(View):
     name_field = 's3_object_name'
     type_field = 's3_object_type'
@@ -42,9 +45,14 @@ class SignS3View(View):
     # GET url when the upload succeeds.
     private = False
 
+    aws_region_name = DEFAULT_AWS_REGION
+    if hasattr(settings, 'AWS_S3_REGION_NAME'):
+        aws_region_name = settings.AWS_S3_REGION_NAME
+
     def dispatch(self, request, *args, **kwargs):
         self.s3_client = boto3.client(
             's3', config=s3_config,
+            region_name=self.aws_region_name,
             aws_access_key_id=self.get_aws_access_key(),
             aws_secret_access_key=self.get_aws_secret_key()
         )
@@ -117,6 +125,7 @@ class SignS3View(View):
         if not getattr(self, 's3_client', None):
             self.s3_client = boto3.client(
                 's3', config=s3_config,
+                region_name=self.aws_region_name,
                 aws_access_key_id=self.get_aws_access_key(),
                 aws_secret_access_key=self.get_aws_secret_key()
             )
