@@ -40,13 +40,22 @@
 
         S3Upload.prototype.handleFileSelect = function(file_element) {
             var f, files, _i, _len, _results;
-            this.onProgress(0, 'Upload started.');
+
             files = file_element.files;
+
+            if (files.length === 0) {
+                return;
+            }
+
             _results = [];
+
+            this.onProgress(0, 'Upload started.');
+
             for (_i = 0, _len = files.length; _i < _len; _i++) {
                 f = files[_i];
                 _results.push(this.uploadFile(f));
             }
+
             return _results;
         };
 

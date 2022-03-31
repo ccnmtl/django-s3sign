@@ -1,3 +1,7 @@
+0.3.2
+==================
+* Don't call onProgress event handler if file list is empty.
+
 0.3.1 (2022-02-17)
 ==================
 * Use default max file size of 2gb.
