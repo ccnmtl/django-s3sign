@@ -1,4 +1,4 @@
-0.3.2
+0.3.2 (2022-04-01)
 ==================
 * Don't call onProgress event handler if file list is empty.
 
