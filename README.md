@@ -90,7 +90,9 @@ class MySignS3View(LoggedInView, SignS3View):
 The required javascript is also included, so you can include it in
 your page with:
 
-    <script src="{{STATIC_URL}}s3sign/js/s3upload.js"></script>
+    {% load static %}
+
+    <script src="{% static 's3sign/js/s3upload.js' %}"></script>
 
 Your form would then somewhere have a bit like:
 
