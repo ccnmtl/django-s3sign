@@ -1,3 +1,8 @@
+0.3.3
+==================
+* Fixed bug where `acl` attribute was not working, preventing the
+  ability to upload objects with `public-read` access.
+
 0.3.2 (2022-04-01)
 ==================
 * Don't call onProgress event handler if file list is empty.
