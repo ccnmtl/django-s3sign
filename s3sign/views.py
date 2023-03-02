@@ -150,7 +150,7 @@ class SignS3View(View):
             conditions=[
                 # Allow for setting the content-type in the form data.
                 ['starts-with', '$Content-Type', ''],
-                # Limit upload to 4MB
+                # Limit upload to self.max_file_size
                 ['content-length-range', 0, self.max_file_size],
             ],
             expiration=self.get_expiration_time())
