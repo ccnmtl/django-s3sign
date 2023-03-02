@@ -96,9 +96,14 @@ your page with:
 
 Your form would then somewhere have a bit like:
 
-    <p id="status"><strong>Please select a file</strong></p>
-    <input type="file" id="file" onchange="s3_upload();"/>
-    <input type="hidden" name="s3_url" id="uploaded-url" />
+    <form method="post">
+        <p id="status">
+            <strong>Please select a file</strong>
+        </p>
+
+        <input type="hidden" name="s3_url" id="uploaded-url" />
+        <input type="file" id="file" onchange="s3_upload();"/>
+    </form>
 
 And
 

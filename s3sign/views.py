@@ -133,26 +133,25 @@ class SignS3View(View):
         url = 'https://{}.s3.amazonaws.com/{}'.format(
             S3_BUCKET, object_name)
 
-        put_data = {
-            'Bucket': S3_BUCKET,
-            'ContentType': mime_type.replace(' ', '+'),
-            'Key': object_name,
+        # Prepare post configuration (fields & conditions)
+        fields = {
+            'Content-Type': mime_type.replace(' ', '+'),
         }
+        conditions = [
+            # Allow for setting the content-type in the form data.
+            ['starts-with', '$Content-Type', ''],
+            # Limit upload to self.max_file_size
+            ['content-length-range', 0, self.max_file_size],
+        ]
 
         if self.acl:
-            put_data['ACL'] = self.acl
+            fields['acl'] = self.acl
+            conditions.append({'acl': self.acl})
 
         presigned_post_url = create_presigned_post(
             self.s3_client, S3_BUCKET, object_name,
-            fields={
-                'Content-Type': mime_type.replace(' ', '+'),
-            },
-            conditions=[
-                # Allow for setting the content-type in the form data.
-                ['starts-with', '$Content-Type', ''],
-                # Limit upload to self.max_file_size
-                ['content-length-range', 0, self.max_file_size],
-            ],
+            fields=fields,
+            conditions=conditions,
             expiration=self.get_expiration_time())
 
         data = {
