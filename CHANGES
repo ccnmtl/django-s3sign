@@ -1,4 +1,4 @@
-0.3.3
+0.3.3 (2023-03-03)
 ==================
 * Fixed bug where `acl` attribute was not working, preventing the
   ability to upload objects with `public-read` access.
