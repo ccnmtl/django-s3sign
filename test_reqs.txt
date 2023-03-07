@@ -1,4 +1,4 @@
-django-treebeard==4.5.1
+django-treebeard==4.6.1
 Markdown>=2.6.11,<3
 coverage==5.4
 importlib-metadata==3.7.0  # for flake8
