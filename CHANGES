@@ -1,4 +1,4 @@
-0.4.0
+0.4.0 (2023-09-21)
 ==================
 * Adjust S3Upload.file_dom_selector to allow for any DOM selector
   rather than just an ID.
