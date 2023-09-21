@@ -1,3 +1,8 @@
+0.4.0
+==================
+* Adjust S3Upload.file_dom_selector to allow for any DOM selector
+  rather than just an ID.
+
 0.3.3 (2023-03-03)
 ==================
 * Fixed bug where `acl` attribute was not working, preventing the

@@ -111,7 +111,7 @@ And
 <script>
 function s3_upload() {
     var s3upload = new S3Upload({
-        file_dom_selector: 'file',
+        file_dom_selector: '#file',
         s3_sign_put_url: '/sign_s3/', // change this if you route differently
         s3_object_name: $('#file')[0].value,
 
