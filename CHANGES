@@ -2,6 +2,10 @@
 ==================
 * Adjust S3Upload.file_dom_selector to allow for any DOM selector
   rather than just an ID.
+* Introduced new optional param `file_dom_el` for passing in the file
+  input element directly. This is convenient when initializing
+  S3Upload from an event, as you can just pass in the event.target
+  object.
 
 0.3.3 (2023-03-03)
 ==================
