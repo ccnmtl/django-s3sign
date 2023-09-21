@@ -6,6 +6,8 @@
 
         S3Upload.prototype.s3_sign_put_url = '/signS3put';
 
+        S3Upload.prototype.file_dom_el = null;
+
         S3Upload.prototype.file_dom_selector = '#file_upload';
 
         S3Upload.prototype.x_amz_acl = 'public-read';
@@ -29,7 +31,9 @@
                 this[option] = options[option];
             }
             this.handleFileSelect(
-                document.querySelector(this.file_dom_selector));
+                this.file_dom_el ||
+                    document.querySelector(this.file_dom_selector)
+            );
         }
 
         S3Upload.prototype.getXMLError = function(xmlDoc) {
