@@ -4,7 +4,7 @@ import json
 from datetime import datetime
 
 from django.test import TestCase, RequestFactory, override_settings
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from s3sign.views import SignS3View
 
 
@@ -84,7 +84,7 @@ class TestView(TestCase):
             dict(s3_object_type='image/jpg', s3_object_name='foo.jpg'))
         response = v.get(request)
         self.assertEqual(response.status_code, 200)
-        resp = json.loads(smart_text(response.content))
+        resp = json.loads(smart_str(response.content))
         self.assertTrue('presigned_post_url' in resp.keys())
         self.assertTrue('url' in resp.keys())
 
