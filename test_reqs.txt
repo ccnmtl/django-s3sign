@@ -1,4 +1,4 @@
-coverage==7.6.4
+coverage==7.6.5
 importlib-metadata==8.5.0  # for flake8
 typing_extensions==4.12.2
 zipp==3.21.0  # for flake8
