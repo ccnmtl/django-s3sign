@@ -24,6 +24,10 @@
             return console.log('base.onError()', status);
         };
 
+        S3Upload.prototype.onPreprocess = function(files) {
+            return files;
+        };
+
         function S3Upload(options) {
             if (options === null) options = {};
             let option;
@@ -51,6 +55,8 @@
             if (files.length === 0) {
                 return;
             }
+
+            files = this.onPreprocess(files);
 
             _results = [];
 
