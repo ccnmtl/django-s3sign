@@ -12,9 +12,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import View
 
-from s3sign.utils import (
-    s3_config, create_presigned_url, create_presigned_post
-)
+from s3sign.utils import s3_config, upload_file
 
 
 DEFAULT_AWS_REGION = 'us-east-1'
@@ -120,10 +118,6 @@ class SignS3View(View):
             root=self.get_root())
 
     def get(self, request):
-        S3_BUCKET = self.get_bucket()
-        mime_type = self.get_mimetype(request)
-        object_name = self.get_object_name(request)
-
         if not getattr(self, 's3_client', None):
             self.s3_client = boto3.client(
                 's3', config=s3_config,
@@ -132,40 +126,10 @@ class SignS3View(View):
                 aws_secret_access_key=self.get_aws_secret_key()
             )
 
-        url = 'https://{}.s3.amazonaws.com/{}'.format(
-            S3_BUCKET, object_name)
-
-        # Prepare post configuration (fields & conditions)
-        fields = {
-            'Content-Type': mime_type.replace(' ', '+'),
-        }
-        conditions = [
-            # Allow for setting the content-type in the form data.
-            ['starts-with', '$Content-Type', ''],
-            # Limit upload to self.max_file_size
-            ['content-length-range', 0, self.max_file_size],
-        ]
-
-        if self.acl:
-            fields['acl'] = self.acl
-            conditions.append({'acl': self.acl})
-
-        presigned_post_url = create_presigned_post(
-            self.s3_client, S3_BUCKET, object_name,
-            fields=fields,
-            conditions=conditions,
-            expiration=self.get_expiration_time())
-
-        data = {
-            'url': url,
-            'presigned_post_url': presigned_post_url,
-        }
-
-        if self.private:
-            data['presigned_get_url'] = create_presigned_url(
-                self.s3_client, S3_BUCKET,
-                object_name, self.get_expiration_time()
-            )
+        data = upload_file(
+            self.s3_client, self.get_bucket(), self.get_mimetype(request),
+            self.get_object_name(request), self.max_file_size, self.acl,
+            self.get_expiration_time(), self.private)
 
         return HttpResponse(
             json.dumps(data), content_type='application/json')

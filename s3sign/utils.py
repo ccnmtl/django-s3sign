@@ -101,3 +101,49 @@ def create_presigned_post(s3_client, bucket_name, object_name,
 
     # The response contains the presigned URL and required fields
     return response
+
+
+def upload_file(
+        s3_client, bucket, mime_type, object_name,
+        max_file_size, acl, expiration_time, private
+) -> object:
+    S3_BUCKET = bucket
+    mime_type = mime_type
+    object_name = object_name
+
+    url = 'https://{}.s3.amazonaws.com/{}'.format(
+        S3_BUCKET, object_name)
+
+    # Prepare post configuration (fields & conditions)
+    fields = {
+        'Content-Type': mime_type.replace(' ', '+'),
+    }
+    conditions = [
+        # Allow for setting the content-type in the form data.
+        ['starts-with', '$Content-Type', ''],
+        # Limit upload to self.max_file_size
+        ['content-length-range', 0, max_file_size],
+    ]
+
+    if acl:
+        fields['acl'] = acl
+        conditions.append({'acl': acl})
+
+    presigned_post_url = create_presigned_post(
+        s3_client, S3_BUCKET, object_name,
+        fields=fields,
+        conditions=conditions,
+        expiration=expiration_time)
+
+    data = {
+        'url': url,
+        'presigned_post_url': presigned_post_url,
+    }
+
+    if private:
+        data['presigned_get_url'] = create_presigned_url(
+            s3_client, S3_BUCKET,
+            object_name, expiration_time
+        )
+
+    return data
