@@ -1,3 +1,7 @@
+0.5.0
+==================
+* Refactored upload logic out of view code
+
 0.4.1 (2025-01-10)
 ==================
 * Recognize heic and heif MIME types.
