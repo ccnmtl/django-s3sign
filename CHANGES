@@ -1,4 +1,4 @@
-0.5.0
+0.5.0 (2025-01-13)
 ==================
 * Refactored upload logic out of view code
 * Added .avif image format.
