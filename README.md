@@ -46,9 +46,9 @@ Methods you can override:
 * `get_bucket(self)`
 * `get_mimetype(self, request)`
 * `extension_from_mimetype(self, mime_type)`
-* `now(self)` # useful for unit tests
-* `now_time(self)` # useful for unit tests
-* `basename(self)`
+* `now()` # useful for unit tests
+* `now_time()` # useful for unit tests
+* `basename()`
 * `get_object_name(self, extension)`
 
 Most of those should be clear. Read the source if in doubt.

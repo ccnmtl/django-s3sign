@@ -20,13 +20,16 @@ class PinnedView(SignS3View):
     def get_bucket(self):
         return "bucket"
 
-    def now(self):
+    @staticmethod
+    def now():
         return datetime(year=2016, month=1, day=1)
 
-    def now_time(self):
+    @staticmethod
+    def now_time():
         return 0
 
-    def basename(self, request):
+    @staticmethod
+    def basename():
         return "f495f780-5fd3-45d3-9483-becc7ebff922"
 
 
@@ -45,7 +48,7 @@ class TestView(TestCase):
 
     def test_basename(self):
         v = SignS3View()
-        self.assertIsNotNone(v.basename(None))
+        self.assertIsNotNone(v.basename())
 
     def test_extension_from_mimetype(self):
         v = SignS3View()
