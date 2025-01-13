@@ -106,7 +106,7 @@ def create_presigned_post(s3_client, bucket_name, object_name,
 def upload_file(
         s3_client, bucket, mime_type, object_name,
         max_file_size, acl, expiration_time, private
-) -> object:
+) -> dict:
     S3_BUCKET = bucket
     mime_type = mime_type
     object_name = object_name
