@@ -32,6 +32,7 @@ class SignS3View(View):
         ('webp', '.webp'),
         ('heif', '.heif'),
         ('heic', '.heic'),
+        ('avif', '.avif'),
     ]
     default_extension = '.obj'
     root = ''

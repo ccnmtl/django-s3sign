@@ -29,6 +29,7 @@ Attributes you can override (and their default values):
         ('webp', '.webp'),
         ('heif', '.heif'),
         ('heic', '.heic'),
+        ('avif', '.avif'),
     ]
     default_extension = '.obj'
     root = ''
