@@ -6,11 +6,10 @@ import uuid
 
 import boto3
 
-from datetime import datetime
-
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic import View
+from django.utils import timezone
 
 from s3sign.utils import s3_config, upload_file
 
@@ -59,34 +58,34 @@ class SignS3View(View):
         )
         return super().dispatch(request, *args, **kwargs)
 
-    def get_name_field(self):
+    def get_name_field(self) -> str:
         return self.name_field
 
-    def get_type_field(self):
+    def get_type_field(self) -> str:
         return self.type_field
 
     def get_expiration_time(self):
         return self.expiration_time
 
-    def get_mime_type_extensions(self):
+    def get_mime_type_extensions(self) -> list:
         return self.mime_type_extensions
 
-    def get_default_extension(self):
+    def get_default_extension(self) -> str:
         return self.default_extension
 
-    def get_root(self):
+    def get_root(self) -> str:
         return self.root
 
-    def get_path_string(self):
+    def get_path_string(self) -> str:
         return self.path_string
 
-    def get_aws_access_key(self):
+    def get_aws_access_key(self) -> str:
         return settings.AWS_ACCESS_KEY
 
-    def get_aws_secret_key(self):
+    def get_aws_secret_key(self) -> str:
         return settings.AWS_SECRET_KEY
 
-    def get_bucket(self):
+    def get_bucket(self) -> str:
         return settings.AWS_UPLOAD_BUCKET
 
     def get_mimetype(self, request):
@@ -98,13 +97,16 @@ class SignS3View(View):
                 return ext
         return self.get_default_extension()
 
-    def now(self):
-        return datetime.now()
+    @staticmethod
+    def now():
+        return timezone.now()
 
-    def now_time(self):
+    @staticmethod
+    def now_time():
         return time.time()
 
-    def basename(self, request):
+    @staticmethod
+    def basename():
         return str(uuid.uuid4())
 
     def extension(self, request):
@@ -112,7 +114,7 @@ class SignS3View(View):
 
     def get_object_name(self, request):
         now = self.now()
-        basename = self.basename(request)
+        basename = self.basename()
         extension = self.extension(request)
         return self.get_path_string().format(
             now=now, basename=basename, extension=extension,

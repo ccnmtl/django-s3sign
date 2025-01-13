@@ -2,6 +2,8 @@
 ==================
 * Refactored upload logic out of view code
 * Added .avif image format.
+* Clean up SignS3View method signatures
+* Use timezone-aware datetime object in SignS3View
 
 0.4.1 (2025-01-10)
 ==================
