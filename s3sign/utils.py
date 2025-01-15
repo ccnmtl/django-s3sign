@@ -1,6 +1,20 @@
 import logging
+import os
+import uuid
 from botocore.config import Config
 from botocore.exceptions import ClientError
+
+
+DEFAULT_AWS_REGION = 'us-east-1'
+PATH_STRING = (
+    '{root}{now.year:04d}/{now.month:02d}/'
+    '{now.day:02d}/{basename}{extension}')
+
+
+def get_object_name(now, extension, root=''):
+    basename = str(uuid.uuid4())
+    return PATH_STRING.format(
+        now=now, basename=basename, extension=extension, root=root)
 
 
 s3_config = Config(
@@ -103,10 +117,37 @@ def create_presigned_post(s3_client, bucket_name, object_name,
     return response
 
 
-def upload_file(
+def upload_file(s3_client, file_name, bucket, object_name=None) -> bool:
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :return: True if file was uploaded, else False
+    """
+
+    # If S3 object_name was not specified, use file_name
+    if object_name is None:
+        object_name = os.path.basename(file_name)
+
+    # Upload the file
+    try:
+        s3_client.upload_file(file_name, bucket, object_name)
+    except ClientError as e:
+        logging.error(e)
+        return False
+
+    return True
+
+
+def prepare_presigned_post(
         s3_client, bucket, mime_type, object_name,
         max_file_size, acl, expiration_time, private
 ) -> dict:
+    """
+    Prepare data necessary to make a POST request to upload a file to
+    S3 from JavaScript.
+    """
     S3_BUCKET = bucket
 
     url = 'https://{}.s3.amazonaws.com/{}'.format(
