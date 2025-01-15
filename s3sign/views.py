@@ -11,10 +11,9 @@ from django.http import HttpResponse
 from django.views.generic import View
 from django.utils import timezone
 
-from s3sign.utils import s3_config, upload_file
-
-
-DEFAULT_AWS_REGION = 'us-east-1'
+from s3sign.utils import (
+    DEFAULT_AWS_REGION, s3_config, prepare_presigned_post
+)
 
 
 class SignS3View(View):
@@ -129,7 +128,7 @@ class SignS3View(View):
                 aws_secret_access_key=self.get_aws_secret_key()
             )
 
-        data = upload_file(
+        data = prepare_presigned_post(
             self.s3_client, self.get_bucket(), self.get_mimetype(request),
             self.get_object_name(request), self.max_file_size, self.acl,
             self.get_expiration_time(), self.private)
