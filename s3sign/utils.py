@@ -108,8 +108,6 @@ def upload_file(
         max_file_size, acl, expiration_time, private
 ) -> dict:
     S3_BUCKET = bucket
-    mime_type = mime_type
-    object_name = object_name
 
     url = 'https://{}.s3.amazonaws.com/{}'.format(
         S3_BUCKET, object_name)
