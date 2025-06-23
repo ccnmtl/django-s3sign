@@ -13,7 +13,7 @@ mccabe==0.7.0
 python-dateutil==2.9.0.post0
 
 # boto3
-urllib3==2.4.0
+urllib3==2.5.0
 jmespath==1.0.1
 s3transfer==0.13.0
 
