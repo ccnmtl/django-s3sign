@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/ccnmtl/django-s3sign.svg?branch=master)](https://travis-ci.org/ccnmtl/django-s3sign)
-[![Coverage Status](https://coveralls.io/repos/github/ccnmtl/django-s3sign/badge.svg?branch=master)](https://coveralls.io/github/ccnmtl/django-s3sign?branch=master)
 
 # django-s3sign
 s3 sign view for django
