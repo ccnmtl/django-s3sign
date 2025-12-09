@@ -17,4 +17,4 @@ jmespath==1.0.1
 s3transfer==0.16.0
 
 botocore>=1.16.0,<1.43.0
-boto3[crt]>=1.13.0,<1.42.0
+boto3[crt]>=1.13.0,<1.43.0
