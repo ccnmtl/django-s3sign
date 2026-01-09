@@ -1,3 +1,7 @@
+0.6.0
+==================
+* Remove deprecated acl functionality
+
 0.5.1 (2024-01-15)
 ==================
 * Revised upload methods
