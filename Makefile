@@ -14,6 +14,10 @@ PIP ?= $(VE)/bin/pip
 
 all: flake8
 
+include *.mk
+
+JS_FILES = s3sign/static/s3sign/js
+
 clean:
 	rm -rf $(VE)
 	find . -name '*.pyc' -exec rm {} \;
