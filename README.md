@@ -35,7 +35,6 @@ Attributes you can override (and their default values):
     path_string = (
         "{root}{now.year:04d}/{now.month:02d}/"
         "{now.day:02d}/{basename}{extension}")
-    acl = "public-read"
 ```
 
 Methods you can override:
