@@ -37,7 +37,6 @@ class SignS3View(View):
     path_string = (
         "{root}{now.year:04d}/{now.month:02d}/"
         "{now.day:02d}/{basename}{extension}")
-    acl = 'public-read'
     max_file_size = 2000000000  # 2gb
 
     # The private flag specifies whether we need to return a signed
@@ -130,7 +129,7 @@ class SignS3View(View):
 
         data = prepare_presigned_post(
             self.s3_client, self.get_bucket(), self.get_mimetype(request),
-            self.get_object_name(request), self.max_file_size, self.acl,
+            self.get_object_name(request), self.max_file_size,
             self.get_expiration_time(), self.private)
 
         return HttpResponse(

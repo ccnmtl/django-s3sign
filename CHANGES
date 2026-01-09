@@ -1,5 +1,6 @@
-0.5.2
+0.6.0
 ==================
+* Remove deprecated acl functionality
 * Added eslint checking
 
 0.5.1 (2024-01-15)

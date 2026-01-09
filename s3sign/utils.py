@@ -142,7 +142,7 @@ def upload_file(s3_client, file_name, bucket, object_name=None) -> bool:
 
 def prepare_presigned_post(
         s3_client, bucket, mime_type, object_name,
-        max_file_size, acl, expiration_time, private
+        max_file_size, expiration_time, private
 ) -> dict:
     """
     Prepare data necessary to make a POST request to upload a file to
@@ -163,10 +163,6 @@ def prepare_presigned_post(
         # Limit upload to self.max_file_size
         ['content-length-range', 0, max_file_size],
     ]
-
-    if acl:
-        fields['acl'] = acl
-        conditions.append({'acl': acl})
 
     presigned_post_url = create_presigned_post(
         s3_client, S3_BUCKET, object_name,
