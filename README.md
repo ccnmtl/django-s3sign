@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/ccnmtl/django-s3sign.svg?branch=master)](https://travis-ci.org/ccnmtl/django-s3sign)
 
 # django-s3sign
-s3 sign view for django
+s3 sign view for django. Facilitates file uploads to AWS S3.
 
 ## installation
 
