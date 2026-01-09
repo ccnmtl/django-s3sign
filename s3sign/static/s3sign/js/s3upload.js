@@ -70,9 +70,6 @@
 
             if (xhr.withCredentials !== null) {
                 xhr.open(method, url, true);
-            } else if (typeof XDomainRequest !== "undefined") {
-                xhr = new XDomainRequest();
-                xhr.open(method, url);
             } else {
                 xhr = null;
             }
@@ -93,7 +90,7 @@
                 if (this.readyState === 4 && this.status === 200) {
                     try {
                         result = JSON.parse(this.responseText);
-                    } catch (error) {
+                    } catch {
                         this_s3upload.onError('Signing server returned some ugly/empty JSON: "' + this.responseText + '"');
                         return false;
                     }
