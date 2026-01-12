@@ -10,8 +10,6 @@
 
         S3Upload.prototype.file_dom_selector = '#file_upload';
 
-        S3Upload.prototype.x_amz_acl = 'public-read';
-
         S3Upload.prototype.onFinishS3Put = function(public_url, private_url) {
             return console.log('base.onFinishS3Put()', public_url, private_url);
         };
@@ -166,10 +164,6 @@
             });
 
             formData.append('file', file);
-
-            if (this.x_amz_acl) {
-                xhr.setRequestHeader('x-amz-acl', this.x_amz_acl);
-            }
 
             return xhr.send(formData);
         };
