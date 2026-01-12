@@ -18,7 +18,12 @@ setup(
     description="Django view for AWS S3 signing",
     long_description=long_description,
     long_description_content_type='text/markdown',
-    install_requires=['Django>=3.2', 'boto3', 'botocore'],
+    install_requires=[
+        'Django>=4.2',
+        'boto3',
+        'botocore',
+        'six',  # for botocore
+    ],
     scripts=[],
     license="GPL3",
     platforms=["any"],
