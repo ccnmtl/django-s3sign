@@ -25,6 +25,7 @@ Attributes you can override (and their default values):
         ('pdf', '.pdf'),
         ('png', '.png'),
         ('svg', '.svg'),
+        ('webm', '.webm'),
         ('webp', '.webp'),
         ('heif', '.heif'),
         ('heic', '.heic'),
