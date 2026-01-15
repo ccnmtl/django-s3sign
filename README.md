@@ -111,7 +111,7 @@ And
 ```
 <script>
 function s3_upload() {
-    var s3upload = new S3Upload({
+    const s3upload = new S3Upload({
         file_dom_el: null, // Optional, and overrides file_dom_selector
                            // when present.
         file_dom_selector: '#file',

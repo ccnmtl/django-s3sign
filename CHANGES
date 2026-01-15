@@ -1,3 +1,7 @@
+0.6.1
+==================
+* Use modern JS class for S3Upload
+
 0.6.0 (2026-01-12)
 ==================
 * Removed deprecated acl functionality
