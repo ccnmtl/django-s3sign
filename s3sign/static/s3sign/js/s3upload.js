@@ -7,10 +7,12 @@ export default class S3Upload {
 
         Object.assign(this, options);
 
-        this.handleFileSelect(
-            this.file_dom_el ||
-                document.querySelector(this.file_dom_selector)
-        );
+        if (this.file_dom_el || this.file_dom_selector) {
+            this.handleFileSelect(
+                this.file_dom_el ||
+                    document.querySelector(this.file_dom_selector)
+            );
+        }
     }
 
     onFinishS3Put(public_url, private_url) {
@@ -170,3 +172,5 @@ export default class S3Upload {
             });
     };
 }
+
+window.S3Upload = S3Upload;

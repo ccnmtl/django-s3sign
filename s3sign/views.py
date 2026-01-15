@@ -27,6 +27,7 @@ class SignS3View(View):
         ('pdf', '.pdf'),
         ('png', '.png'),
         ('svg', '.svg'),
+        ('webm', '.webm'),
         ('webp', '.webp'),
         ('heif', '.heif'),
         ('heic', '.heic'),
