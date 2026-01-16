@@ -35,7 +35,7 @@ export default class S3Upload {
     }
 
     handleFileSelect(file_element) {
-        var f, files, _i, _len, _results;
+        let f, files, _i, _len, _results;
 
         files = file_element.files;
 
@@ -56,7 +56,7 @@ export default class S3Upload {
     };
 
     createCORSRequest(method, url) {
-        var xhr;
+        let xhr;
         xhr = new XMLHttpRequest();
 
         if (xhr.withCredentials !== null) {
@@ -69,7 +69,7 @@ export default class S3Upload {
     };
 
     executeOnSignedUrl(file, callback) {
-        var this_s3upload, xhr;
+        let this_s3upload, xhr;
         this_s3upload = this;
         xhr = new XMLHttpRequest();
         xhr.open('GET', this.s3_sign_put_url +
@@ -77,7 +77,7 @@ export default class S3Upload {
                  '&s3_object_name=' + this.s3_object_name, true);
         xhr.overrideMimeType('text/plain; charset=x-user-defined');
         xhr.onreadystatechange = function() {
-            var result;
+            let result;
             if (this.readyState === 4 && this.status === 200) {
                 try {
                     result = JSON.parse(this.responseText);
@@ -107,7 +107,7 @@ export default class S3Upload {
     uploadToS3(
         file, urlObj, public_url, presigned_get_url
     ) {
-        var this_s3upload, xhr;
+        let this_s3upload, xhr;
         this_s3upload = this;
 
         xhr = this.createCORSRequest('POST', urlObj.url);
@@ -142,7 +142,7 @@ export default class S3Upload {
 
             };
             xhr.upload.onprogress = function(e) {
-                var percentLoaded;
+                let percentLoaded;
                 if (e.lengthComputable) {
                     percentLoaded = Math.round((e.loaded / e.total) * 100);
                     return this_s3upload.onProgress(percentLoaded, percentLoaded === 100 ? 'Finalizing.' : 'Uploading.');
@@ -162,11 +162,10 @@ export default class S3Upload {
     };
 
     uploadFile(file) {
-        var this_s3upload;
-        this_s3upload = this;
+        const me = this;
         return this.executeOnSignedUrl(
             file, function(signedURL, publicURL, signedGetURL) {
-                return this_s3upload.uploadToS3(
+                return me.uploadToS3(
                     file, signedURL, publicURL, signedGetURL
                 );
             });
