@@ -139,3 +139,18 @@ class SignS3View(View):
 
         return HttpResponse(
             json.dumps(data), content_type='application/json')
+
+
+class SignS3ECSView(SignS3View):
+    """
+    SignS3View that doesn't use access keys. This is how we auth on
+    ECS using task roles.
+    """
+    def get(self, request):
+        if not getattr(self, 's3_client', None):
+            self.s3_client = boto3.client(
+                's3', config=s3_config,
+                region_name=self.aws_region_name,
+            )
+
+        return super().get(request)

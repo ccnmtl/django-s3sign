@@ -1,3 +1,7 @@
+0.6.2
+==================
+* Introduce SignS3ECSView
+
 0.6.1 (2026-01-15)
 ==================
 * Use modern JS class for S3Upload
