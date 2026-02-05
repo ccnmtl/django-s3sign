@@ -21,17 +21,25 @@ class SignS3View(View):
     type_field = 's3_object_type'
     expiration_time = 3600 * 8  # 8 hours
     mime_type_extensions = [
+        # Images
         ('bmp', '.bmp'),
         ('gif', '.gif'),
         ('jpeg', '.jpg'),
         ('pdf', '.pdf'),
         ('png', '.png'),
         ('svg', '.svg'),
-        ('webm', '.webm'),
         ('webp', '.webp'),
         ('heif', '.heif'),
         ('heic', '.heic'),
         ('avif', '.avif'),
+
+        # Audio
+        ('flac', '.flac'),
+        ('mpeg', '.mp3'),
+        ('mp4', '.mp4'),
+        ('ogg', '.ogg'),
+        ('wav', '.wav'),
+        ('webm', '.webm'),
     ]
     default_extension = '.obj'
     root = ''
