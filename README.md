@@ -18,19 +18,6 @@ Attributes you can override (and their default values):
     name_field = 's3_object_name'
     type_field = 's3_object_type'
     expiration_time = 10
-    mime_type_extensions = [
-        ('bmp', '.bmp'),
-        ('gif', '.gif'),
-        ('jpeg', '.jpg'),
-        ('pdf', '.pdf'),
-        ('png', '.png'),
-        ('svg', '.svg'),
-        ('webm', '.webm'),
-        ('webp', '.webp'),
-        ('heif', '.heif'),
-        ('heic', '.heic'),
-        ('avif', '.avif'),
-    ]
     default_extension = '.obj'
     root = ''
     path_string = (
