@@ -55,7 +55,9 @@ class TestView(TestCase):
         self.assertEqual(v.extension_from_mimetype('image/jpeg'), '.jpg')
         self.assertEqual(v.extension_from_mimetype('image/png'), '.png')
         self.assertEqual(v.extension_from_mimetype('unknown'), '.obj')
-        self.assertEqual(v.extension_from_mimetype(None), None)
+        self.assertEqual(v.extension_from_mimetype('audio/ogg'), '.ogg')
+        self.assertEqual(v.extension_from_mimetype('audio/webm'), '.webm')
+        self.assertEqual(v.extension_from_mimetype(None), '.obj')
 
     def test_get_mimetype(self):
         request = self.factory.get("/", dict(s3_object_type='hello'))
