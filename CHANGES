@@ -1,3 +1,7 @@
+0.6.3
+==================
+* Use default extension when no mime type is present
+
 0.6.2 (2026-02-06)
 ==================
 * Recognize more audio mime types

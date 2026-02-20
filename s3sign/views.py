@@ -100,7 +100,7 @@ class SignS3View(View):
 
     def extension_from_mimetype(self, mime_type: str) -> str:
         if not mime_type:
-            return None
+            return self.get_default_extension()
 
         for m, ext in self.get_mime_type_extensions():
             if m in mime_type:
