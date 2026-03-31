@@ -1,4 +1,4 @@
-export default class S3Upload {
+class S3Upload {
     constructor(options={}) {
         this.s3_object_name = 'default_name';
         this.s3_sign_put_url = '/signS3put';
