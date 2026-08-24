@@ -1,3 +1,7 @@
+0.6.5
+==================
+* Add .m4a file type extension
+
 0.6.4 (2026-03-31)
 ==================
 * Don't use class export in s3upload.js
