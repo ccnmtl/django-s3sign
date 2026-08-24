@@ -36,7 +36,8 @@ class SignS3View(View):
         # Audio
         ('flac', '.flac'),
         ('mpeg', '.mp3'),
-        ('mp4', '.mp4'),
+        ('audio/mp4', '.m4a'),
+        ('video/mp4', '.mp4'),
         ('ogg', '.ogg'),
         ('wav', '.wav'),
         ('webm', '.webm'),
