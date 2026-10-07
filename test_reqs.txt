@@ -1,6 +1,6 @@
 importlib-metadata==9.0.1  # for flake8
 typing_extensions==4.16.0
-zipp==4.1.0  # for flake8
+zipp==4.1.1  # for flake8
 flake8==7.4.1
 pep8==1.7.1
 pyflakes==4.0.2
